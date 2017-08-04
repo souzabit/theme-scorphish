@@ -1,6 +1,6 @@
 # name: scorphish
 
-function _prompt_rubies -a sep_color -a ruby_color -d 'Display current Ruby (rvm/rbenv)'
+function _prompt_rubies -a ruby_color -d 'Display current Ruby (rvm/rbenv)'
   [ "$theme_display_ruby" = 'no' ]; and return
   set -l ruby_version
   if type rvm-prompt >/dev/null 2>&1
@@ -10,7 +10,7 @@ function _prompt_rubies -a sep_color -a ruby_color -d 'Display current Ruby (rvm
   end
   [ -z "$ruby_version" ]; and return
 
-  echo -n -s $sep_color '|' $ruby_color (echo -n -s $ruby_version | cut -d- -f2-)
+  echo -n -s $ruby_color (echo -n -s $ruby_version | cut -d- -f2-)
 end
 
 function _prompt_virtualfish -a sep_color -a venv_color -d "Display activated virtual environment (only for virtualfish, virtualenv's activate.fish changes prompt by itself)"
@@ -76,8 +76,8 @@ function fish_prompt
   set -l blue (set_color blue)
   set -l red (set_color red)
   set -l normal (set_color normal)
-  set -l yellow (set_color ffcc00)
-  set -l orange (set_color ffb300)
+  set -l yellow (set_color ffee00)
+  set -l orange (set_color ff9900)
   set -l green (set_color green)
 
   set_color -o 666
@@ -85,17 +85,17 @@ function fish_prompt
 
   _prompt_whoami $gray $green
 
-  set_color -o cyan
-  printf '%s' (prompt_pwd)
+  # set_color -o cyan
+  # printf '%s' (prompt_pwd)
 
-  _prompt_rubies $gray $red
+  _prompt_rubies $red
 
   if [ "$VIRTUAL_ENV" != "$LAST_VIRTUAL_ENV" -o -z "$PYTHON_VERSION" ]
     set -gx PYTHON_VERSION (python --version 2>&1 | cut -d\  -f2)
     set -gx LAST_VIRTUAL_ENV $VIRTUAL_ENV
   end
 
-  _prompt_virtualfish $gray $blue
+  _prompt_virtualfish $gray (set_color 0d74fe)
 
   _prompt_rust $gray $orange
 
@@ -126,6 +126,13 @@ function fish_prompt
     end
   end
 
+  set_color -o 666
+  printf '\n‹'
+  set_color -o cyan
+  printf '%s' (prompt_pwd)
+  set_color -o 666
+  printf '›'
+
   if test $exit_code -ne 0
     set arrow_colors 600 900 c00 f00
   else
@@ -146,4 +153,16 @@ function fish_prompt
   printf ' '
 
   set_color normal
+
+  # wakatime for fish
+  #set -l project
+  #if echo (pwd) | grep -qEi "^/Users/$USER/Workspace/"
+  #  set project (echo (pwd) | sed "s#^/Users/$USER/Workspace/\\([^/]*\\).*#\\1#")
+  #else if echo (pwd) | grep -qEi "^/Users/$USER/gocode/"
+  #  set project (echo (pwd) | sed "s#^/Users/$USER/gocode/\\([^/]*\\).*#\\1#")
+  #else
+  #  set project "Terminal"
+  #end
+  #wakatime --write --plugin "fish-wakatime/0.0.1" --entity-type app --project "$project" --entity (echo $history[1] | cut -d ' ' -f1) 2>&1 > /dev/null &
+
 end
